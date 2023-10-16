@@ -1,0 +1,356 @@
+techniques:
+	ANN :- works on tabular kind of dataset
+	CNN :- 	i/p :- Images, videos
+		Image classification, 
+		Object detection, 
+		Object segmentation,
+		Tracking
+		GAN(Generative Adversarial N/W) :- It is a framework for training generative models
+	RNN :- (i/p :- text, time series, sequential data)
+
+Neural n/w : perceptron ( simplest form of a neural n/w)
+	     CONS: can't handle complexity
+		   only linear relations
+		   Hard to train due to slow learning
+		   Overfitting risk
+		   Limited features 
+
+	    So, JEOFFREY HINTON invented Back Propagation :  using this concept ANN, CNN and RNN became so efficient
+
+Components of neural n/w : input layer :- receives the raw data or features
+			   hidden layer :- each neuron takes inputs from the previous layer and applies a transoformation using its weights and activation function
+			   output layer :- produces final prediction or outcomes
+			   weights and biases :- each connection between neurons has an associated weight, which determines the strength of the connection
+						 each neuron has a bias term that affects its output.
+			   activation function :- activation functions introduce non-linearity to the network, allowing it to learn complex relationships in the data
+
+Steps:
+	
+
+	Suppose we have three features x1, x2 and x3 from input layer that is getting passed through the hidden neuron which is present in hidden layer 1 and each neurons do some kind of processing. Before passing through neurons there are some weights (w1, w2, w3) assigned which will be passed through hidden neurons. At that time 2 types of opeartions usually happens inside the hidden neuron. Opeartions:
+								
+								Step1 :  summation of weights and inputs ( y = w1x1 + w2x2 + w3x3 )	
+								Step2 :  After summation we add a parameter to y which is called Bias then apply activation fuction 
+										[z = Act(y)]
+				Activation function : e.g - sigmoid 
+Then the output z is passed to the o/p layer and there also a weight assigned to that particular layer [ z = z*w4 -> Act(z) ] then we'll get the output. And this propagation is called as a forward propagation.
+
+Activation function : 1) sigmoid AF : transforms y between 0 to 1 ( if the value < 0.5 then o/p is 0 [ neuron is not activated]
+								    if the value > 0.5 then o/p is 1 [ neuron is activated])
+		      2) relu AF : max(y,0)  if y(-ve) = max(-ve, 0) => o/p = 0
+				             if y(+ve) = max(+ve, 0) => o/p = +ve
+
+Neural n/w training with back propagation : 
+				after forward propagation we get the predicted output (y^). 
+				loss funrtion = (y-y^)^2  This loss value should be reduced to a minimal value such that y^ = y and it can be done by using optimizer.
+				so to reduce loss value we do backpropagation means we have to update the weights. once we get the updated value again frontpropgation will go ahead.  					and this process will go ahead for some no of epochs unless and untill the loss value is completely reduced.
+
+
+				loss function - for single value
+				cost function - for multiple records
+
+
+Gradient Descent (optimizer) : The key idea behind gradient descent is that by iteratively adjusting the parameters based on the gradient of the loss, the model learns to make better 				       predictions over time. By iteratively minimizing the loss function, gradient descent enables neural networks to make accurate predictions on a wide range of 			       tasks, from image classification to natural language processing.
+
+
+=> The vanishing gradient problem in the sigmoid activation function arises due to the characteristics of the sigmoid function's derivative, which becomes very small for large   
+   positive and negative inputs. (derivative of sigmoid ranges from 0 - 0.25) so this creates problems in deep networks. 
+   so this issue led to the development of ReLU which doesnot suffer from vanishing gradients for positive inputs.
+
+
+
+commonly used activation functions :-
+
+1. sigmoid function :- This function is the most frequenly used activation function in the beginning of DL which is a smoothing function and easy to derive. 
+		       This function itself has certain defects that is when the i/p is slightly away from the coordinate origin, the gradient of the function becomes very small, almost 		       zero in the backpropagation. we all use the chain rule of differential to calculate the differential of each weight w. when the back propagation passes through the 		       sigmoid function, the differential on this chain is very small. so this problem is called gradient saturation or gradient dispersion.
+
+		       The function is not centered on 0, which will reduce the efficiency of weight update.
+
+                       The sigmoid function performs exponetial operations, which is slower for computers
+
+		       pros:-  1) smooth gradient, preventing jumps in o/p values
+			       2) output values bound bet 0 & 1, normalizing the o/p of each neuron
+			       3) clear predictions, i.e very close to 1 or 0
+
+
+		       cons :- 1) Prone to gradient vanishing                            
+			       2) Function o/p is not zero-centered                  		       
+			       3) Power operations are relatively time consuming     		      
+
+
+
+2. tanh function :- tanh is hyperbolic tangent fuction. The curves of tanh and sigmoid function are relatively similar. But the whole function is 0-centric, which is better than sigmoid.
+		    In general binary classification problems, the tanh is used for the hidden layer and sigmoid is used for the o/p layer.
+
+
+
+4. ReLU function :- This function takes the maximum value. This is not fully interval-derivable, but we can take sub-gradient.
+    [max (0,x)]	    pros:- 1) when the i/p is positive, there is no gradient saturation problem.
+				 2) calculation speed is much faster. this function has only a linear relationship.
+		
+		    cons:- 1) when the i/p is -ve, relu is completely inactive, which means that once a -ve no is entered, relu will die. in the forward propagation process, it is 				      not a problem. But in back propagation, if we entered a -ve no, the gradient will completely zero.
+                           2) we find that the o/p in the relu function is 0 or a positive no, which means that the relu function is not a 0-centric function. 
+
+
+
+5. Leaky ReLU function :- In order to solve the dead relu problem, here we set the 1st half of relu 0.01x instead of 0. [f(x) = max(0.01x, x)]
+
+
+6. ELU (Exponential Linear Units) :- ELU is also proposed to solve the problems of relu which has no dead relu issues and the mean of the o/p is also zero-centered.
+				     But the problem is that it is slightly more computationally intensive.
+
+
+7. PRelu (Parametric Relu) :- if x>0 then x
+			      if x<=0 then (alpha * x)    here, alpha = fixed parameter / learning parameter / hyper parameter
+
+			      if alpha = 0.01 f becomes leaky relu
+			      if alpha = 0 -> relu
+			      if alpha = any value or learnable parameter -> prelu
+
+
+
+8. Swish function :- y = x * sigmoid(x)
+		     This is used when neural n/w > 40 layers. Swish's design was inspired by the use of sigmoid function for gating in LSTMs and highway n/w. we use the same value for   		     gating to simplify the gating mechanism, which is called self-gating.
+
+
+
+9. Softplus function :- f(x) = ln(1+exp x)
+			it is similar to relu, but it is relatively smooth. it has a wide acceptance range (0, +inf).
+
+
+
+10. Softmax :- For an arbitrary real vector of length K, softmax can compress it into a real vector of length k with a value in the range (0, 1), and the sum of the elements in the vector 	       is 1. it also has many applications in multiclass classification and neural networks and it is different from the normal max function. the max function only outputs the 	       largest value and softmax ensures thst smaller values have a smaller probability and will not be discarded directly.
+
+
+
+weight initializtion :
+key points :- 1) weights should be small 
+	      2) weigths should not be same
+	      3) weights should have good variance
+
+Techniques :- 1) uniform distribution
+	      2) xavier distribution -> a) xavier normal
+					b) xavier uniform
+	      3) He init -> works very nicely with relu activation function. -> a) He uniform
+										b) He normal
+
+
+
+
+stochatic gradient descent : The problem in gradient descent is, for large datasets, calculating gradient using the entire dataset can be computationally expensive and time consuming.
+			     so SGD addresses this issue by using a mini batch of the dataset to compute the gradient at each iteration. Instead of considering the whole dataset, only a 			     few samples are used to estimate the gradient.
+			     
+	                     problem:- SGD computes the gradient of the loss function using a random mini-batch, which introduces noise into the gradient estimation. This noise can lead to 				       fluctuations in the parameter updates and slow down convergence.
+
+
+			     solution:- SGD with momentum 
+
+
+
+
+adagrad optimiozer : idea:- can we use diff. learning rate for each and every neurons along with the hidden layers based on diff. iterations
+		     the datset for which we want to solve it by ANN, have two types of features:-
+			  1) DENSE -> most of the features are non zero
+			  2) SPARSE -> here most of the values are zero 
+		     based on SPARSE and DENSE feature adagrad optimizer applies different different learning parameter and so that it can efficiently come into global minima
+		     disadvantage:- as the no of iteration increases at some points alpha(t) becomes very high
+
+                     solution:- adadelta and rmsprop
+
+		     adadelta:- it handles the adagrad problem by controlling the accumulation of squared gradients and scaling the learning rates adaptively based on the historical 			     		information.
+
+                     rmsprop:- Instead of summing the squared gradients over all past iterations (as in Adagrad), RMSProp maintains an exponentially weighted moving average of squared 			       gradients. The use of this moving average in RMSProp helps to adapt the learning rates in a manner that addresses the diminishing learning rate problem.
+
+
+
+adam optimizer : this is the most popular optimizer. the Adam optimizer's combination of adaptive learning rates, momentum, and bias correction makes it a versatile and reliable choice for 		 optimizing deep learning models. 
+
+
+
+
+
+loss function ------> passing 1 record 
+
+						   
+cost function ------> passing batch size of records
+						   
+						   
+
+loss function in regression :
+
+1) squared error loss :- if we convert it into cost function then it is called mean squared error loss (MSE).
+			 pros:- 1) the equation of the squared error loss is in the form of quadratic equation.
+				   properties:- (i) when we plot the quadratic eq, we get a gradient descent with only global minima.
+					        (ii) we don't get any local minima
+			        2) the MSE loss penalizes the model for making large errors by squaring them.	
+			 cons:- it is not robost to outliers.
+
+
+2) absolute error loss :- pros:- the mean absolute error (MAE) is more robust to outliers as compared to MSE because we don't penalize it by squaring them.
+			  cons:- it may have local minima.
+				 as we are using a modulus operand so the computation is very difficult.
+
+
+3) huber loss :- here it takes the combination of both MSE and MAE. The main idea behind huber loss is that it penalizes large errors linearly (similar to MAE) and small errors 			 quadratically (similar to MSE). This provides a balance between the robustness of MAE to outliers and the convergence benefits of MSE.
+
+
+
+for classification problem :
+
+4) cross entropy :-  It measures the dissimilarity between the predicted probability distribution and the true probability distribution of class labels.
+		     (i) binary cross entropy (binary log loss / log loss):- it is used in binary classification tasks where each example belongs to one of two classes. the target labels 									     for each example are binary (0 or 1).
+		     (ii) multiclass cross entropy (categorical cross entropy / softmax loss):- it is used in multiclass classification task where each example can belong to one of 													multiple classes and the target labels for each example are categorical, often represented 												as one-hot encoded vectors.
+
+
+
+
+
+CNN (Convolution Neural N/W) : in CNN, we classify the images and learn to detect the features from the images using different filters. The architecture of CNNs is inspired by the 				       organization of the visual cortex in the human brain. so, we can think of a CNN as an artificial neural network that has some type of specialization for 			       being able to pick out or detect patterns. This pattern detection is what makes CNNs so useful for image analysis.
+
+* disadvantages of using ANN for image classification 1) too much computation
+						      2) treats local pixels same as pixels far apart
+                                                      3) create the image to multidimensional array and the features are not recognised.
+						      4) sensitive to lation of an object in an image
+
+convolutional layer:- a convolutional layer receives input, transforms the input in some way, and then outputs the transformed input to the next layer. The inputs to convolutional layers 		       are called input channels, and the outputs are called output channels. With a convolutional layer, the transformation that occurs is called a convolution operation.
+
+padding :- it refers to the process of adding extra layers of pixels around the edges of an input image before performing convolution.
+
+Convolution operation:- like ANN, here we first apply filter then do the convolution operation and get the o/p and after that we apply relu activation function on each and every field. when back propagation is done the o/p values are get upadated. so this whole operation is called one convolutional layer.  With a convolutional layer, the transformation that occurs is called a convolution operation.
+
+
+max pooling:- it is used to reduce the spatial dimensions of feature maps while retaining important information. max pooling divides the input feature amp into non-overlapping regions and selects the maximum value from each region to create a new downsampled feature map. This operation helps in capturing important patterns and features while discarding some of the less relevant details. this solves the problems of location invariant means if we have multiple objects one of the filter is able to determine that particular object and able to clearly pick up from them.
+
+avg pooling
+min pooling
+
+
+flattening layer:- whatever outputs we are getting from max pooling we are going to make it flattened means we will pickup the entire filter and just elongate it.
+
+
+convolution -----> max pooling ------> flattening layer -------> create an ANN of fully connected neural n/w --------> o/p
+
+
+
+
+
+Recurrent Neural N/W (RNN) : it works very well with sequence of data as i/p. e.g:- spam classifier implimentation, time series data, sells forecasting, stock forecasting... can be done 										    with very good accuracy with the help of RNN.
+
+                                            
+lets consider an example of time series :-  |
+					    |        /
+			 		    |       /
+					    |      /---> sales of data      
+					    |     /
+           				    |    /
+					    |   /
+					    |  /
+					    |____________x_____
+                                                         time
+we need to predict the o/p at this particular time(x) 
+in ML, we have user financial techniques like ARIMA, SARIMAX..etc.
+but in RNN, it will consider the whole previous data or time blocks and predict the o/p.
+
+applications of RNN:- google image search, google translator, image cpationing etc.
+
+
+LSTM RNN :- LSTMs are designed to avoid long-term dependency problem. these are focusing on resolve the vanishing gradient problem.
+
+in LSTM, we have both long term and short term memory. here we have two states (memory cell state and hidden state) instead of just one state as we have in RNN.
+
+memory cell state :- this state is responsible for retaining knowledge into its memory.
+hidden state :- it is acts as the hidden state that we had in RNN.
+
+the long term memory will be able to retain the context or knowledge that was provided a long back. and the main reason that LSTM is able to do that is beacause it is used the concept of gates. A gate allows us certain information to pass through and it restrics the other information.
+
+	     1) forget gate :- it is responsible for allowing our model to forgot some information or retain some information
+	     2) i/p gate :- it is resposnsible for adding useful information to the model
+	     3) o/p gate :- it is responsible for letting us know what to produce as an o/p and it will update the old cell state to new cell state.
+
+Bidirectional RNN :- This allows the model to capture context from both the past and the future of each time step, enhancing its ability to understand and model the dependencies present in the input sequence. one disadvantage of using bidirectional RNN is that we have to look at the entire sequence of data before making any prediction.
+
+GRU (Gated Recurrent Units):- these are varant of LSTMs but are simpler in their structure and are easier to train.the success of GRU is due to the the gating n/w signals that contol how 			      the present i/p and previous memory are used, to update the current activation function and produce the current stae.
+
+						present i/p, previous memory ----> update activation ----> current state
+
+
+
+
+seq2seq encoder-decoder model :- this model is designed to handle the tasks where the i/p sequence is mapped to an o/p seq. 
+
+encoder :- encode inputs into intermediate features. it will present a piece of text as a vector
+
+decoder :- decode the presentation into outputs. 
+
+input ------> encoder ------> state ------> decoder ------> o/p
+					       ^					       
+					       |
+					       |
+			  		       |
+					     input
+
+
+problems :- 1) encoder and decoder usually don't perform well with longer sentences.
+	    2) researchers experimented and found out lower bleu score
+
+encoder decoder takes one word at a time and translates it at each time step. sometimes the words in the source language don't align with the words in the target language. so attention mechanism is used to focus on specific parts of an input sequence and this is done by assigning the weights to different parts of the i/p sequence with the most important parts receiving the highest weights.
+
+
+Attention models :
+
+lets consider an ex:-
+machine language translator
+
+
+
+                                                       DECODER
+                                              --------------------------->
+                              (W)-->vector         
+                               ^ \         (x)       (Y)       (Z)      <EOS> 
+                               |  \         ^         ^         ^         ^
+                               |   \        |         |         |         |
+ _         _         _         _    \       _         _         _         _
+|_| ----> |_| ----> |_| ----> |_|    \     |_| ----> |_| ----> |_| ----> |_|
+ ^         ^         ^         ^      \     ^         ^         ^         ^
+ |         |         |         |       \    |         |         |         |
+ |         |         |         |        \   |         |         |         |
+(A)       (B)       (C)       (D)        \ (W)       (X)       (Y)       (Z)
+
+ --------> time axis <---------
+         
+-------------------------------->              
+           ENCODER                   
+
+
+here the vector 'W' is generated at the end of the string when we are taking some i/p, then W vector is gettong passed to the decoder and based on this we are getting the o/p w.r.t other language. this 'W' is not being able to represent the whole context of the sentence because we are taking just a vector after the calculation at the end of the encoder. we are not taking the o/p from encoder. 
+
+issues:- we are not taking o/p after every LSTM RNN, here we are just taking the o/p after the last time step. in case of longer sentence the context will not be represented properly as the vector 'W' will take information only from the nearest words.
+
+solution:- bidirectional LSTM RNN
+
+advantages of using bidirectiuonal LSTM RNN:- Capturing Context from Both Directions
+                                              this is well suited for sequence modeling tasks which includes NLP tasks like sentimental analysis, part of spech tagging and machine                		                              translation.
+				              Bidirectional LSTMs can help mitigate the vanishing gradient problem in capturing long-range dependencies by considering the entire sequence               					      in both directions.
+
+
+transformers :
+
+with an RNN encoder we pass an i/p sentence one word after the other. the current words hidden state has dependencies in the previous words hidden state and the word embeddings are generated one time step at a time.
+but with a transformer encoder there is no concept of time step for the i/p, here we pass in all the words simultaneously and determine word embeddings simultaneously.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				
