@@ -39,6 +39,7 @@ For detailed instructions and code, refer to the Jupyter Notebook `TFOD 2.0 cust
 ## Output
 
 ![Inference Output](https://github.com/monalisaburma/object-detection/assets/122416015/c186a5e5-c20d-4ac2-af7f-fb2e826d824f)
-)
+
+
 
 Feel free to reach out for any questions or suggestions!
